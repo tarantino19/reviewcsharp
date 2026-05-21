@@ -1,0 +1,34 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files (VS / VS Code)
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET tools
+project.lock.json
+project.fragment.lock.json
+
+# NuGet packages
+*.nupkg
+.nuget/
+
+# EF Core migrations snapshot artifacts (optional if you regenerate)
+Migrations/*Designer.cs
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets (IMPORTANT)
+appsettings.Development.json
+secrets.json
