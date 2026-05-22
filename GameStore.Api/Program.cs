@@ -1,6 +1,106 @@
+using GameStore.Api.Dtos;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+const string GetGameEndpointName = "GetGameById";
+
+List<GameDto> games = [
+    new (
+        1,
+        "The Legend of Zelda: Breath of the Wild",
+        "Action-adventure",
+        19.99M,
+        new DateOnly(2017, 3, 3)),
+    new (
+        2,
+        "Super Mario Odyssey",
+        "Platform",
+        59.99M,
+        new DateOnly(2017, 10, 27)),
+    new (
+        3,
+        "Red Dead Redemption 2",
+        "Action-adventure",
+        39.99M,
+        new DateOnly(2018, 10, 26))
+];
+
+//get all games.  /games
+app.MapGet("/games", () => games); //returns the games list as JSON
+
+//get game by id. /games/1
+app.MapGet("/games/{id}", (int id) =>
+    games.Find(g => g.Id == id) is { } game
+        ? Results.Ok(game)
+        : Results.NotFound()
+)
+.WithName(GetGameEndpointName);
+// “I just created item #5. You can find it at /games/5.”
+
+app.MapPost("/games", (CreateGameDto createGameDto) =>
+{
+    var newGame = new GameDto(
+        games.Count + 1,
+        createGameDto.Name,
+        createGameDto.Genre,
+        createGameDto.Price,
+        createGameDto.ReleaseDate
+    );
+
+    games.Add(newGame);
+
+
+//“I just created item #5. You can find it at /games/5.”
+    return Results.CreatedAtRoute(GetGameEndpointName, new { id = newGame.Id }, newGame);
+});
+
+//PUT /games/5
+
+app.MapPut("/games/{id}", (int id, UpdateGameDto updateGameDto) =>
+{
+    var gameIndex = games.FindIndex(g => g.Id == id);
+
+    if (gameIndex == -1)
+    {
+        return Results.NotFound(new
+        {
+            message = "Record not updated. Game not found."
+        });
+    }
+
+    games[gameIndex] = new GameDto(
+        id,
+        updateGameDto.Name,
+        updateGameDto.Genre,
+        updateGameDto.Price,
+        updateGameDto.ReleaseDate
+    );
+
+    return Results.Ok(new
+    {
+        message = "Game updated successfully"
+    });
+});
+
+app.MapDelete("/games/{id}", (int id) =>
+{
+    var gameIndex = games.RemoveAll(g => g.Id == id);
+
+    if (gameIndex == -1)
+    {
+        return Results.NotFound(new
+        {
+            message = "Record not deleted. Game not found."
+        });
+    }
+
+    return Results.Ok(new
+    {
+        message = "Game deleted successfully"
+    });
+
+});
+
 
 app.Run();
