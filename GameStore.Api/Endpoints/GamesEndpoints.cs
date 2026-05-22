@@ -28,15 +28,15 @@ private static readonly List<GameDto> games = [
 ];
 
 
-    public static WebApplication MapGamesEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
     {
 
-        // var group = app.MapGroup("/games"
+        var group = app.MapGroup("/games");
         //get all games.  /games
-        app.MapGet("/games", () => games); //returns the games list as JSON
+        group.MapGet("/", () => games); //returns the games list as JSON
 
         //get game by id. /games/1
-        app.MapGet("/games/{id}", (int id) =>
+        group.MapGet("/{id}", (int id) =>
         {
             GameDto? game = games.Find(g => g.Id == id);
 
@@ -50,7 +50,7 @@ private static readonly List<GameDto> games = [
         .WithName(GetGameEndpointName);
         // “I just created item #5. You can find it at /games/5.”
 
-        app.MapPost("/games", (CreateGameDto createGameDto) =>
+        group.MapPost("/", (CreateGameDto createGameDto) =>
         {
             var newGame = new GameDto(
                 games.Count + 1,
@@ -68,7 +68,7 @@ private static readonly List<GameDto> games = [
         });
 
         //PUT /games/5
-        app.MapPut("/games/{id}", (int id, UpdateGameDto updateGameDto) =>
+        group.MapPut("/{id}", (int id, UpdateGameDto updateGameDto) =>
         {
             var gameIndex = games.FindIndex(g => g.Id == id);
 
@@ -76,7 +76,7 @@ private static readonly List<GameDto> games = [
             {
                 return Results.NotFound(new
                 {
-                    message = "Record not updated. Game not found."
+                    message = "Record does not exist, record not updated."
                 });
             }
 
@@ -95,7 +95,7 @@ private static readonly List<GameDto> games = [
         });
 
         //DELETE /games/4
-        app.MapDelete("/games/{id}", (int id) =>
+        group.MapDelete("/{id}", (int id) =>
         {
             var gameIndex = games.RemoveAll(g => g.Id == id);
 
@@ -114,6 +114,6 @@ private static readonly List<GameDto> games = [
 
         });
 
-        return app;
+        return group; 
         }
     }
