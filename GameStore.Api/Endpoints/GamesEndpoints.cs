@@ -31,7 +31,8 @@ private static readonly List<GameDto> games = [
     public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
     {
 
-        var group = app.MapGroup("/games");
+        var group = app.MapGroup("/games")
+            .WithParameterValidation();
         //get all games.  /games
         group.MapGet("/", () => games); //returns the games list as JSON
 
