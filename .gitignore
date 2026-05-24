@@ -32,3 +32,6 @@ Thumbs.db
 # Secrets (IMPORTANT)
 appsettings.Development.json
 secrets.json
+
+/GameStore.db
+
