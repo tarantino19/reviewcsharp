@@ -34,4 +34,7 @@ appsettings.Development.json
 secrets.json
 
 /GameStore.db
+GameStore.db
+GameStore.db-shm
+GameStore.db-wal
 
